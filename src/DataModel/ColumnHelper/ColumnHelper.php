@@ -1,8 +1,7 @@
 <?php
-namespace Catalyzer\ColumnHelper;
+namespace DataModel\ColumnHelper;
 
-use Catalyzer\Contracts\ColumnHelperContract;
-use Catalyzer\Beautyfier\Beautyfier;
+use DataModel\Contracts\ColumnHelperContract;
 
 abstract class ColumnHelper implements ColumnHelperContract{
 	
@@ -47,7 +46,6 @@ abstract class ColumnHelper implements ColumnHelperContract{
     }
     public static function setupForeignsAndDomestics($dataModel,$fks)
     {
-        $beautyfier = Beautyfier::detectBeautyfier();
         foreach($fks as $fk)
         {   
             if($fk->table_name == $dataModel->getTable())
@@ -57,9 +55,9 @@ abstract class ColumnHelper implements ColumnHelperContract{
                 {
                     $foreign->$foreignField = $fk->$key;
                 }
-                $foreign->functionName = $beautyfier->singularize($fk->foreign_table_name);
-                $foreign->foreignModelName = $beautyfier->toForeignModelName($foreign->functionName);
-                $foreign->dataModelName = $beautyfier->toDataModelName($fk->foreign_table_name);
+                $foreign->functionName = self::singularize($fk->foreign_table_name);
+                //$foreign->foreignModelName = $beautyfier->toForeignModelName($foreign->functionName);
+                //$foreign->dataModelName = $beautyfier->toDataModelName($fk->foreign_table_name);
                 $foreigns[$fk->column_name] = $foreign;
             }
             else
@@ -70,9 +68,9 @@ abstract class ColumnHelper implements ColumnHelperContract{
                 {
                     $domestic->$foreignField = $fk->$key;
                 }
-                $domestic->functionName = $beautyfier->singularize($fk->table_name);
-                $domestic->foreignModelName = $beautyfier->toForeignModelName($domestic->functionName);
-                $domestic->dataModelName = $beautyfier->toDataModelName($fk->table_name);
+                $domestic->functionName = self::singularize($fk->table_name);
+                //$domestic->foreignModelName = $beautyfier->toForeignModelName($domestic->functionName);
+                //$domestic->dataModelName = $beautyfier->toDataModelName($fk->table_name);
                 $domestics[$domestic->functionName] = $domestic;
             }
         }
@@ -81,6 +79,25 @@ abstract class ColumnHelper implements ColumnHelperContract{
             $dataModel->setForeigns($foreigns);
         if(isset($domestics))
             $dataModel->setDomestics($domestics);
+
+    }
+    protected static function singularize($plural,$shouldUc = false)
+    {
+        $plural = lcfirst($plural);
+        if(substr($plural,-1) == 's' )
+        {
+            $singular = substr($plural,0,-1);
+        }
+
+        if (!isset($singular)) 
+            throw new \Exception('Url Path Could Not Be Singularized');
+        if($shouldUc)
+            $singular = ucfirst($singular);
+        return $singular;
+    }
+    protected static function beautify($bad)
+    {
+        return ucwords(str_replace('_',' ',$bad));
 
     }
 

@@ -1,9 +1,7 @@
 <?php
-namespace Catalyzer\ColumnHelper;
+namespace DataModel\ColumnHelper;
 
-use Carbon\Carbon;
-use Catalyzer\Contracts\ColumnHelperContract;
-use Catalyzer\Beautyfier\Beautyfier;
+use DataModel\Contracts\ColumnHelperContract;
 
 class PgSqlColumnHelper extends ColumnHelper{
 
@@ -19,7 +17,6 @@ class PgSqlColumnHelper extends ColumnHelper{
         $DBColumns = \DB::select( \DB::raw("SELECT {$selectFields},CASE WHEN is_nullable='NO' THEN true ELSE false END as is_nullable FROM information_schema.columns WHERE table_schema='public' AND table_name='".$dataModel->getTable()."'"));
         $formFields = $dataModel->getFormFields();
        	$tableFields = $dataModel->getTableFields();
-        $beautyfier = Beautyfier::detectBeautyfier();
         $fieldVars = array_keys(self::$ESSENTIAL_FIELD_VARS);
         foreach($DBColumns as $DBColumn )
         {
@@ -28,7 +25,7 @@ class PgSqlColumnHelper extends ColumnHelper{
             {
             	if($fieldVar == 'column_name')
             	{
-            		$column->showName = $beautyfier->beautify($DBColumn->column_name);
+            		$column->showName = self::beautify($DBColumn->column_name);
             		$column->name = $DBColumn->column_name;
             		if(isset(self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name]))
 	            	{

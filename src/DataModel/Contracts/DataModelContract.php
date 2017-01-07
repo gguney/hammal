@@ -1,5 +1,5 @@
 <?php
-namespace Catalyzer\Contracts;
+namespace DataModel\Contracts;
 
 interface DataModelContract
 {

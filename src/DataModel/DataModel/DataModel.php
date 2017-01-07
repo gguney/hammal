@@ -1,9 +1,9 @@
 <?php 
 
-namespace Catalyzer\DataModel;
+namespace DataModel\DataModel;
 
-use Catalyzer\Contracts\DataModelContract;
-
+use DataModel\Contracts\DataModelContract;
+use DataModel\ColumnHelper\ColumnHelper;
 
 abstract class DataModel implements DataModelContract
 {
@@ -21,12 +21,20 @@ abstract class DataModel implements DataModelContract
     protected $rules;
 
     protected $pivot = false;
-
+    protected $DATA_MODELS_PATH = "\\App\\Http\\DataModels" ;
+    protected $MODELS_PATH = "\\App\\Http\\Models" ;
 
 	public function __construct()
 	{ 
 		$this->setName();
+		$this->remember();
 		//SuperCacheHelper::rememberModel($this);
+	}
+	private function remember()
+	{
+		$columnHelper = ColumnHelper::detectColumnHelper();
+		$columnHelper->setupColumns($this);
+	    $columnHelper->getFKs($this);
 	}
 	public function getName()
 	{
@@ -35,36 +43,45 @@ abstract class DataModel implements DataModelContract
 	public function setName()
 	{
 		$name = get_class($this);
-		$beautyfier = Beautyfier::detectBeautyfier();
 
-		$this->name = substr($name, strrpos($name, '\\') + 1);
+		$this->name =substr($name, strrpos($name, '\\') + 1);
+
 		if(!isset($this->model))
 		{
 			if(!$this->pivot)
-				$this->model = $beautyfier->toModelName($this->name);        
+				$this->model = $this->toModelName($this->name);        
 			else 
-				$this->model = 'Ref'.$beautyfier->toModelName($this->name);        
+				$this->model = 'Ref'.$this->toModelName($this->name);        
  
 		}
+		$modelPath = $this->MODELS_PATH.'\\'.$this->model;
+		$model = (new $modelPath);
 		if(!isset($this->table))
 		{
 			if(!$this->pivot)
-				$this->table = $beautyfier->toTableName($this->name);     
+				$this->table = $this->toTableName($this->name);     
 			else
-				$this->table = 'ref_'.$beautyfier->toTableName($this->name);     
-	        
+				$this->table = 'ref_'.$this->toTableName($this->name);     
 		}
 		if(!isset($this->hiddenFields))
 		{	
-			$modelPath = $beautyfier->modelsFolder().$this->model;
-			$hiddenFields = (new $modelPath)->getHidden();
+			$hiddenFields = $model->getHidden();
 			$this->hiddenFields = $hiddenFields;
 		}
+	}
+	private function toModelName($name)
+	{	
+		return $name;
+	}
+	private function toTableName($name)
+	{	
+		return lcfirst($name.'s');
 	}
 	public function getModelName()
 	{
 		return $this->model;
 	}
+
 	public function getTable()
 	{
 		return $this->table;
