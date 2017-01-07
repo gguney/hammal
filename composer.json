@@ -1,0 +1,30 @@
+{
+    "name": "gguney/datamodel",
+    "type": "library",
+    "description": "Database Table Modeller",
+    "keywords": ["Database","Table","Model"],
+    "homepage": "https://github.com/gokhanguneygg/datamodel",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Gokhan Guney",
+            "email": "gokhanguneygg@gmail.com",
+            "homepage": "http://gguney.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6 || 7.0"
+    },
+    "require-dev": {
+        "php": ">=5.6 || 7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DataModel\\": "src/DataModel"
+        }
+    }
+}
+
+
+
