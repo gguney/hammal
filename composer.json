@@ -1,8 +1,8 @@
 {
     "name": "gguney/modelcourier",
     "type": "library",
-    "description": "Database Table Modeller",
-    "keywords": ["Database","Table","Model"],
+    "description": "Model Information Courier",
+    "keywords": ["Database","Table","Model","Courier"],
     "homepage": "https://github.com/gokhanguneygg/modelcourier",
     "license": "MIT",
     "minimum-stability": "dev",

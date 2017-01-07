@@ -52,7 +52,6 @@ abstract class DataModel implements DataModelContract
 				$this->model = $this->toModelName($this->name);        
 			else 
 				$this->model = 'Ref'.$this->toModelName($this->name);        
- 
 		}
 		$modelPath = $this->MODELS_PATH.'\\'.$this->model;
 		$model = (new $modelPath);
