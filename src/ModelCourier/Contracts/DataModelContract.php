@@ -1,5 +1,5 @@
 <?php
-namespace DataModel\Contracts;
+namespace ModelCourier\Contracts;
 
 interface DataModelContract
 {

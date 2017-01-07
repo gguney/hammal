@@ -1,20 +1,21 @@
 <?php
-namespace DataModel\ColumnHelper;
+namespace ModelCourier\ColumnHelper;
 
-use DataModel\Contracts\ColumnHelperContract;
+use ModelCourier\Contracts\ColumnHelperContract;
 
-class PgSqlColumnHelper extends ColumnHelper{
+class MySqlColumnHelper extends ColumnHelper{
 
     protected static $ESSENTIAL_FIELD_VARS = [	'column_name'=>'name',
     											'column_default'=>'columnDefault', 
     											'is_nullable'=>'required',
-    											'udt_name'=>'fieldType',
+    											'data_type'=>'fieldType',
     											'character_maximum_length'=>'maxLength'];
-                                                
+    
+
    	public static function setupColumns($dataModel)
     {
     	$selectFields = implode(",", array_keys(self::$ESSENTIAL_FIELD_VARS));
-        $DBColumns = \DB::select( \DB::raw("SELECT {$selectFields},CASE WHEN is_nullable='NO' THEN true ELSE false END as is_nullable FROM information_schema.columns WHERE table_schema='public' AND table_name='".$dataModel->getTable()."'"));
+        $DBColumns = \DB::select( \DB::raw("SELECT {$selectFields} FROM information_schema.columns WHERE table_schema='".env('DB_DATABASE')."' AND table_name='".$dataModel->getTable()."'"));
         $formFields = $dataModel->getFormFields();
        	$tableFields = $dataModel->getTableFields();
         $fieldVars = array_keys(self::$ESSENTIAL_FIELD_VARS);
@@ -33,10 +34,10 @@ class PgSqlColumnHelper extends ColumnHelper{
 	            	}
 	            	else
             		{
-                        if(isset(self::$FIELD_TYPES[$DBColumn->udt_name]))
-	                        $column->fieldType = self::$FIELD_TYPES[$DBColumn->udt_name];
+                        if(isset(self::$FIELD_TYPES[$DBColumn->data_type]))
+	                        $column->fieldType = self::$FIELD_TYPES[$DBColumn->data_type];
                         else
-                            throw new \Exception ('UDT Name Could Not Found for: '.$DBColumn->udt_name );
+                            throw new \Exception ('data_type Name Could Not Found for: '.$DBColumn->data_type );
 
             		}
 	            	if(in_array($DBColumn->column_name,self::$NON_EDITABLE_FIELDS))
@@ -48,9 +49,9 @@ class PgSqlColumnHelper extends ColumnHelper{
                 {
                     if(!isset($DBColumn->character_maximum_length))
                     {
-                        if(isset( self::$LENGHTS[$DBColumn->udt_name] ))
+                        if(isset( self::$LENGHTS[$DBColumn->data_type] ))
                         {
-                            $column->maxLength = self::$LENGHTS[$DBColumn->udt_name] ;
+                            $column->maxLength = self::$LENGHTS[$DBColumn->data_type] ;
                         }
 
  
@@ -77,12 +78,13 @@ class PgSqlColumnHelper extends ColumnHelper{
 
             if(sizeof($formFields== 1) && $formFields[0]=='*' )
             {
-
-                $tmpFormFields[] = $column->name;
+                if(!in_array($column->name,self::$NON_EDITABLE_FIELDS))
+                    $tmpFormFields[] = $column->name;
             }
             if(sizeof($tableFields== 1) && $tableFields[0]=='*')
             {
-                $tmpTableFields[] = $column->name;
+                if(!in_array($column->name,self::$NON_EDITABLE_FIELDS))
+                    $tmpTableFields[] = $column->name;
 
             }
 
@@ -101,7 +103,6 @@ class PgSqlColumnHelper extends ColumnHelper{
 
             }
 
-
             foreach($columns as $column)
             {
                 if(in_array($column->name,$formFields))
@@ -117,6 +118,7 @@ class PgSqlColumnHelper extends ColumnHelper{
         $dataModel->setRules($rules);
         $dataModel->setColumns($columns);
 
+
     }
     public static function getFKs($dataModel)
     {
@@ -125,20 +127,18 @@ class PgSqlColumnHelper extends ColumnHelper{
             "SELECT
                 tc.constraint_name,
                 tc.table_name,
-                kcu.column_name, 
-                ccu.table_name AS foreign_table_name,
-                ccu.column_name AS foreign_column_name 
-            FROM 
+                kcu.column_name,
+                ccu.REFERENCED_TABLE_NAME AS foreign_table_name,
+                kcu.REFERENCED_COLUMN_NAME AS foreign_column_name
+            FROM
                 information_schema.table_constraints AS tc 
                 JOIN information_schema.key_column_usage AS kcu
                   ON tc.constraint_name = kcu.constraint_name
-                JOIN information_schema.constraint_column_usage AS ccu
+                JOIN information_schema.REFERENTIAL_CONSTRAINTS AS ccu
                   ON ccu.constraint_name = tc.constraint_name
-            WHERE constraint_type = 'FOREIGN KEY' AND (tc.table_name='".$dataModel->getTable()."' OR ccu.table_name='".$dataModel->getTable()."' );"
+            WHERE constraint_type = 'FOREIGN KEY' AND (tc.table_name='".$dataModel->getTable()."' OR ccu.REFERENCED_TABLE_NAME='".$dataModel->getTable()."' );"
             ));
         self::setupForeignsAndDomestics($dataModel,$fks);
-
-
     }
 }
 

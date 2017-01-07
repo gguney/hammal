@@ -1,7 +1,7 @@
 <?php
-namespace DataModel\ColumnHelper;
+namespace ModelCourier\ColumnHelper;
 
-use DataModel\Contracts\ColumnHelperContract;
+use ModelCourier\Contracts\ColumnHelperContract;
 
 abstract class ColumnHelper implements ColumnHelperContract{
 	

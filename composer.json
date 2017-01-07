@@ -1,9 +1,9 @@
 {
-    "name": "gguney/datamodel",
+    "name": "gguney/modelcourier",
     "type": "library",
     "description": "Database Table Modeller",
     "keywords": ["Database","Table","Model"],
-    "homepage": "https://github.com/gokhanguneygg/datamodel",
+    "homepage": "https://github.com/gokhanguneygg/modelcourier",
     "license": "MIT",
     "minimum-stability": "dev",
     "authors": [
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "DataModel\\": "src/DataModel"
+            "ModelCourier\\": "src/ModelCourier"
         }
     }
 }

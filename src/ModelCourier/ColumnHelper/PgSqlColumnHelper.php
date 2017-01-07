@@ -1,21 +1,20 @@
 <?php
-namespace DataModel\ColumnHelper;
+namespace ModelCourier\ColumnHelper;
 
-use DataModel\Contracts\ColumnHelperContract;
+use ModelCourier\Contracts\ColumnHelperContract;
 
-class MySqlColumnHelper extends ColumnHelper{
+class PgSqlColumnHelper extends ColumnHelper{
 
     protected static $ESSENTIAL_FIELD_VARS = [	'column_name'=>'name',
     											'column_default'=>'columnDefault', 
     											'is_nullable'=>'required',
-    											'data_type'=>'fieldType',
+    											'udt_name'=>'fieldType',
     											'character_maximum_length'=>'maxLength'];
-    
-
+                                                
    	public static function setupColumns($dataModel)
     {
     	$selectFields = implode(",", array_keys(self::$ESSENTIAL_FIELD_VARS));
-        $DBColumns = \DB::select( \DB::raw("SELECT {$selectFields} FROM information_schema.columns WHERE table_schema='".env('DB_DATABASE')."' AND table_name='".$dataModel->getTable()."'"));
+        $DBColumns = \DB::select( \DB::raw("SELECT {$selectFields},CASE WHEN is_nullable='NO' THEN true ELSE false END as is_nullable FROM information_schema.columns WHERE table_schema='public' AND table_name='".$dataModel->getTable()."'"));
         $formFields = $dataModel->getFormFields();
        	$tableFields = $dataModel->getTableFields();
         $fieldVars = array_keys(self::$ESSENTIAL_FIELD_VARS);
@@ -34,10 +33,10 @@ class MySqlColumnHelper extends ColumnHelper{
 	            	}
 	            	else
             		{
-                        if(isset(self::$FIELD_TYPES[$DBColumn->data_type]))
-	                        $column->fieldType = self::$FIELD_TYPES[$DBColumn->data_type];
+                        if(isset(self::$FIELD_TYPES[$DBColumn->udt_name]))
+	                        $column->fieldType = self::$FIELD_TYPES[$DBColumn->udt_name];
                         else
-                            throw new \Exception ('data_type Name Could Not Found for: '.$DBColumn->data_type );
+                            throw new \Exception ('UDT Name Could Not Found for: '.$DBColumn->udt_name );
 
             		}
 	            	if(in_array($DBColumn->column_name,self::$NON_EDITABLE_FIELDS))
@@ -49,9 +48,9 @@ class MySqlColumnHelper extends ColumnHelper{
                 {
                     if(!isset($DBColumn->character_maximum_length))
                     {
-                        if(isset( self::$LENGHTS[$DBColumn->data_type] ))
+                        if(isset( self::$LENGHTS[$DBColumn->udt_name] ))
                         {
-                            $column->maxLength = self::$LENGHTS[$DBColumn->data_type] ;
+                            $column->maxLength = self::$LENGHTS[$DBColumn->udt_name] ;
                         }
 
  
@@ -78,13 +77,12 @@ class MySqlColumnHelper extends ColumnHelper{
 
             if(sizeof($formFields== 1) && $formFields[0]=='*' )
             {
-                if(!in_array($column->name,self::$NON_EDITABLE_FIELDS))
-                    $tmpFormFields[] = $column->name;
+
+                $tmpFormFields[] = $column->name;
             }
             if(sizeof($tableFields== 1) && $tableFields[0]=='*')
             {
-                if(!in_array($column->name,self::$NON_EDITABLE_FIELDS))
-                    $tmpTableFields[] = $column->name;
+                $tmpTableFields[] = $column->name;
 
             }
 
@@ -103,6 +101,7 @@ class MySqlColumnHelper extends ColumnHelper{
 
             }
 
+
             foreach($columns as $column)
             {
                 if(in_array($column->name,$formFields))
@@ -118,7 +117,6 @@ class MySqlColumnHelper extends ColumnHelper{
         $dataModel->setRules($rules);
         $dataModel->setColumns($columns);
 
-
     }
     public static function getFKs($dataModel)
     {
@@ -127,18 +125,20 @@ class MySqlColumnHelper extends ColumnHelper{
             "SELECT
                 tc.constraint_name,
                 tc.table_name,
-                kcu.column_name,
-                ccu.REFERENCED_TABLE_NAME AS foreign_table_name,
-                kcu.REFERENCED_COLUMN_NAME AS foreign_column_name
-            FROM
+                kcu.column_name, 
+                ccu.table_name AS foreign_table_name,
+                ccu.column_name AS foreign_column_name 
+            FROM 
                 information_schema.table_constraints AS tc 
                 JOIN information_schema.key_column_usage AS kcu
                   ON tc.constraint_name = kcu.constraint_name
-                JOIN information_schema.REFERENTIAL_CONSTRAINTS AS ccu
+                JOIN information_schema.constraint_column_usage AS ccu
                   ON ccu.constraint_name = tc.constraint_name
-            WHERE constraint_type = 'FOREIGN KEY' AND (tc.table_name='".$dataModel->getTable()."' OR ccu.REFERENCED_TABLE_NAME='".$dataModel->getTable()."' );"
+            WHERE constraint_type = 'FOREIGN KEY' AND (tc.table_name='".$dataModel->getTable()."' OR ccu.table_name='".$dataModel->getTable()."' );"
             ));
         self::setupForeignsAndDomestics($dataModel,$fks);
+
+
     }
 }
 
