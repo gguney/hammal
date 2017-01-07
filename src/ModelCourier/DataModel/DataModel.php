@@ -1,9 +1,9 @@
 <?php 
 
-namespace DataModel\DataModel;
+namespace ModelCourier\DataModel;
 
-use DataModel\Contracts\DataModelContract;
-use DataModel\ColumnHelper\ColumnHelper;
+use ModelCourier\Contracts\DataModelContract;
+use ModelCourier\ColumnHelper\ColumnHelper;
 
 abstract class DataModel implements DataModelContract
 {
