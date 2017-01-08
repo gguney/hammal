@@ -40,6 +40,7 @@ abstract class DataModel implements DataModelContract
 	{
 		return $this->name;
 	}
+
 	public function setName()
 	{
 		$name = get_class($this);

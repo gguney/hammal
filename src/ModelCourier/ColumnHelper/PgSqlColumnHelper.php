@@ -25,7 +25,7 @@ class PgSqlColumnHelper extends ColumnHelper{
             {
             	if($fieldVar == 'column_name')
             	{
-            		$column->showName = self::beautify($DBColumn->column_name);
+            		$column->label = self::beautify($DBColumn->column_name);
             		$column->name = $DBColumn->column_name;
             		if(isset(self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name]))
 	            	{

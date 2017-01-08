@@ -2,6 +2,7 @@
 namespace ModelCourier\ColumnHelper;
 
 use ModelCourier\Contracts\ColumnHelperContract;
+use ModelCourier\ColumnHelper\Column;
 
 class MySqlColumnHelper extends ColumnHelper{
 
@@ -21,29 +22,29 @@ class MySqlColumnHelper extends ColumnHelper{
         $fieldVars = array_keys(self::$ESSENTIAL_FIELD_VARS);
         foreach($DBColumns as $DBColumn )
         {
-            $column = new \stdClass();
+            $column = new Column();
             foreach($fieldVars as $fieldVar)
             {
             	if($fieldVar == 'column_name')
             	{
-            		$column->showName = self::beautify($DBColumn->column_name);
-            		$column->name = $DBColumn->column_name;
+            		$column->setLabel(self::beautify($DBColumn->column_name));
+            		$column->setName($DBColumn->column_name);
             		if(isset(self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name]))
 	            	{
-	            		$column->fieldType = self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name];
+	            		$column->setType( self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name] );
 	            	}
 	            	else
             		{
                         if(isset(self::$FIELD_TYPES[$DBColumn->data_type]))
-	                        $column->fieldType = self::$FIELD_TYPES[$DBColumn->data_type];
+	                        $column->setType( self::$FIELD_TYPES[$DBColumn->data_type] );
                         else
                             throw new \Exception ('data_type Name Could Not Found for: '.$DBColumn->data_type );
 
             		}
 	            	if(in_array($DBColumn->column_name,self::$NON_EDITABLE_FIELDS))
-            			$column->editable = false;
+            			$column->setEditable(false);
             		else
-            			$column->editable = true;
+            			$column->setEditable(true);
             	}
                 else if($fieldVar == 'character_maximum_length')
                 {
@@ -51,26 +52,27 @@ class MySqlColumnHelper extends ColumnHelper{
                     {
                         if(isset( self::$LENGHTS[$DBColumn->data_type] ))
                         {
-                            $column->maxLength = self::$LENGHTS[$DBColumn->data_type] ;
+                            $column->setMaxLength( self::$LENGHTS[$DBColumn->data_type] );
                         }
 
  
                     }
                     else
                     {
-                        $column->maxLength = $DBColumn->character_maximum_length;
+                        $column->setMaxLength( $DBColumn->character_maximum_length );
                     }
 
                 }
                 else if ($fieldVar == 'is_nullable')
                 {
                     $fieldVarName = self::$ESSENTIAL_FIELD_VARS[$fieldVar];
-                    $column->$fieldVarName = $DBColumn->$fieldVar;                    
+                    $column->setRequired( $DBColumn->$fieldVar );                    
+                    //$column->setRequired( $DBColumn->$fieldVar );                    
                 }
             	else if($fieldVar == 'column_default')
             	{
                     $fieldVarName = self::$ESSENTIAL_FIELD_VARS[$fieldVar];
-                    $column->$fieldVarName = $DBColumn->$fieldVar;  
+                    $column->setDefault( $DBColumn->$fieldVar);  
             	}
             }
 
@@ -78,13 +80,13 @@ class MySqlColumnHelper extends ColumnHelper{
 
             if(sizeof($formFields== 1) && $formFields[0]=='*' )
             {
-                if(!in_array($column->name,self::$NON_EDITABLE_FIELDS))
-                    $tmpFormFields[] = $column->name;
+                if(!in_array($column->getName(),self::$NON_EDITABLE_FIELDS))
+                    $tmpFormFields[] = $column->getName();
             }
             if(sizeof($tableFields== 1) && $tableFields[0]=='*')
             {
-                if(!in_array($column->name,self::$NON_EDITABLE_FIELDS))
-                    $tmpTableFields[] = $column->name;
+                if(!in_array($column->getName(),self::$NON_EDITABLE_FIELDS))
+                    $tmpTableFields[] = $column->getName();
 
             }
 
@@ -105,13 +107,13 @@ class MySqlColumnHelper extends ColumnHelper{
 
             foreach($columns as $column)
             {
-                if(in_array($column->name,$formFields))
+                if(in_array($column->getName(),$formFields))
                 {
                     $rule = null;
-                    $rule = ($column->required&& $column->editable)? "required":"";
-                    $rule.=($column->required && $column->editable)?self::$OR.self::$VALIDATOR_TYPES[$column->fieldType] : self::$VALIDATOR_TYPES[$column->fieldType];
-                    $rule.=(isset($column->maxLength) )?self::$OR."max:".$column->maxLength:'';
-                    $rules[$column->name] = $rule;              
+                    $rule = ($column->getRequired() && $column->getEditable() )? "required":"";
+                    $rule.=($column->getRequired()  && $column->getEditable() )?self::$OR.self::$VALIDATOR_TYPES[$column->getType()] : self::$VALIDATOR_TYPES[$column->getType()];
+                    $rule.= self::$OR."max:".$column->getMaxLength();
+                    $rules[$column->getName()] = $rule;              
                 }   
             }
           
