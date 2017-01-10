@@ -14,21 +14,32 @@ abstract class DataModel implements DataModelContract
 	protected $tableFields = ['*'];
 	protected $formFields = ['*'];
 	protected $hiddenFields;
+    protected $nonEditableFields;
 
     protected $columns;
     protected $foreigns;
     protected $domestics;
     protected $rules;
 
+    protected $foreignsData;
+
     protected $pivot = false;
-    protected $DATA_MODELS_PATH = "\\App\\Http\\DataModels" ;
-    protected $MODELS_PATH = "\\App\\Http\\Models" ;
+    protected static $DATA_MODELS_PATH = "\\App\\Http\\DataModels\\" ;
+    protected static $MODELS_PATH = "\\App\\Http\\Models\\" ;
 
 	public function __construct()
 	{ 
 		$this->setName();
 		$this->remember();
 		//SuperCacheHelper::rememberModel($this);
+	}
+	public static function getDataModelsPath()
+	{
+		return self::$DATA_MODELS_PATH;
+	}
+	public static function getModelsPath()
+	{
+		return self::$MODELS_PATH;
 	}
 	private function remember()
 	{
@@ -41,12 +52,19 @@ abstract class DataModel implements DataModelContract
 		return $this->name;
 	}
 
+	public function setNonEditableFields($nonEditableFields)
+	{
+		$this->nonEditableFields = $nonEditableFields;
+	}
+	public function getNonEditableFields()
+	{
+		return $this->nonEditableFields;
+	}
+
 	public function setName()
 	{
 		$name = get_class($this);
-
-		$this->name =substr($name, strrpos($name, '\\') + 1);
-
+		$this->name = substr($name, strrpos($name, '\\') + 1);
 		if(!isset($this->model))
 		{
 			if(!$this->pivot)
@@ -54,7 +72,8 @@ abstract class DataModel implements DataModelContract
 			else 
 				$this->model = 'Ref'.$this->toModelName($this->name);        
 		}
-		$modelPath = $this->MODELS_PATH.'\\'.$this->model;
+
+		$modelPath = self::$MODELS_PATH.$this->model;
 		$model = (new $modelPath);
 		if(!isset($this->table))
 		{
@@ -69,13 +88,60 @@ abstract class DataModel implements DataModelContract
 			$this->hiddenFields = $hiddenFields;
 		}
 	}
+
+    public function getForeignsData()
+    {
+        return $this->foreignsData;
+    }
+    /*
+    public function getItemWithDomestics($id){
+        $item = $this;
+        $domestics = $this->getDomestics();
+        if(isset($domestics))
+        {
+            foreach ($domestics as $key => $domestic) 
+            {
+                if(method_exists($this,$domestic->functionName))
+                    $item = $item->with($domestic->functionName);
+                else{
+                    var_dump("ERROR: From SuperModel.php ".$domestic->functionName. ' does not exists in '.get_class($this));
+                }
+            }     
+        } 
+        $item = $item->find($id);
+        return $item;
+    }
+*/
+
+    public function setForeignsData(){
+        if(isset($this->foreigns))
+        {
+            foreach ($this->foreigns as $key=>$foreign) 
+            {
+                $array= [];
+                $foreignModelName = $foreign->foreignModelName;
+
+				$modelPath = $this->MODELS_PATH.'\\'.$foreignModelName;
+                $foreignDatas = (new $modelPath)->orderBy('id')->get();
+                $array[$foreign->columnName] = $foreignDatas;
+                $this->addForeignData($array);  
+            }     
+        } 
+    }
+    public function addForeignData($data)
+    {   
+        $key = array_keys($data)[0];
+        $this->foreignsData[$key] = $data[$key];
+    }
+
 	private function toModelName($name)
 	{	
-		return $name;
+		return substr($name,0, -1);
+
 	}
 	private function toTableName($name)
 	{	
-		return lcfirst($name.'s');
+		return lcfirst($name);
 	}
 	public function getModelName()
 	{

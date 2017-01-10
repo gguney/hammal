@@ -116,10 +116,9 @@ class MySqlColumnHelper extends ColumnHelper{
                     $rules[$column->getName()] = $rule;              
                 }   
             }
-          
         $dataModel->setRules($rules);
         $dataModel->setColumns($columns);
-
+        $dataModel->setNonEditableFields(self::$NON_EDITABLE_FIELDS);  
 
     }
     public static function getFKs($dataModel)

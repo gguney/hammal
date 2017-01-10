@@ -116,6 +116,7 @@ class PgSqlColumnHelper extends ColumnHelper{
           
         $dataModel->setRules($rules);
         $dataModel->setColumns($columns);
+        $dataModel->setNonEditableFields(self::$NON_EDITABLE_FIELDS);
 
     }
     public static function getFKs($dataModel)

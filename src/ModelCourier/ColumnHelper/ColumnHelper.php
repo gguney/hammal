@@ -19,7 +19,7 @@ abstract class ColumnHelper implements ColumnHelperContract{
         'mediumtext'=>'text',
         'decimal'=>'number','double'=>'number','enum'=>'text',
         'bool' => 'checkbox',
-        'timestamp' => 'date', 'date'=>'date','datetime'=>'datetime', 'time'=>'time'
+        'timestamp' => 'datetime', 'date'=>'date','datetime'=>'datetime', 'time'=>'time'
         ];
     protected static $LENGHTS = ['text'=>'1000','json'=>'1000'];
     protected static $FOREIGN_FIELDS = ['constraint_name'=>'constraintName', 'table_name'=> 'tableName', 'column_name'=> 'columnName', 'foreign_table_name'=>'foreignTableName', 'foreign_column_name'=>'foreignColumnName'];
@@ -56,7 +56,7 @@ abstract class ColumnHelper implements ColumnHelperContract{
                     $foreign->$foreignField = $fk->$key;
                 }
                 $foreign->functionName = self::singularize($fk->foreign_table_name);
-                //$foreign->foreignModelName = $beautyfier->toForeignModelName($foreign->functionName);
+                $foreign->foreignModelName = self::singularize($foreign->functionName,true);
                 //$foreign->dataModelName = $beautyfier->toDataModelName($fk->foreign_table_name);
                 $foreigns[$fk->column_name] = $foreign;
             }
@@ -88,6 +88,11 @@ abstract class ColumnHelper implements ColumnHelperContract{
         {
             $singular = substr($plural,0,-1);
         }
+        else
+        {
+            $singular = $plural;
+ 
+        }
 
         if (!isset($singular)) 
             throw new \Exception('Url Path Could Not Be Singularized');
@@ -95,6 +100,7 @@ abstract class ColumnHelper implements ColumnHelperContract{
             $singular = ucfirst($singular);
         return $singular;
     }
+
     protected static function beautify($bad)
     {
         return ucwords(str_replace('_',' ',$bad));
