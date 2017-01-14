@@ -1,16 +1,16 @@
-# DataModel - DatabaseModeller for Laravel
+# ModelCourier - DatabaseModeller for Laravel
 
 Get's databases table information
 
 ### Requirements
 
-- DataModel works with PHP 5.6 or above.
-- DataModel only works with PostgreSQL and MySQL.
+- ModelCourier works with PHP 5.6 or above.
+- ModelCourier only works with PostgreSQL and MySQL.
 
 ### Installation
 
 ```bash
-$ composer require gguney/datamodel
+$ composer require gguney/model-courier
 ```
 
 ### Usage
