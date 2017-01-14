@@ -25,74 +25,64 @@ class MySqlColumnHelper extends ColumnHelper{
             $column = new Column();
             foreach($fieldVars as $fieldVar)
             {
-            	if($fieldVar == 'column_name')
-            	{
-            		$column->setLabel(self::beautify($DBColumn->column_name));
-            		$column->setName($DBColumn->column_name);
-            		if(isset(self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name]))
-	            	{
-	            		$column->setType( self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name] );
-	            	}
-	            	else
-            		{
-                        if(isset(self::$FIELD_TYPES[$DBColumn->data_type]))
-	                        $column->setType( self::$FIELD_TYPES[$DBColumn->data_type] );
+                switch($fieldVar)
+                {
+                    case 'column_name':
+                        $column->set('label',self::beautify($DBColumn->column_name));
+                        $column->set('name',$DBColumn->column_name);
+                        $column->set('placeholder','Enter '.$column->get('label'));
+                        if(isset(self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name]))
+                            $column->set('type',self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name] );
+                        else if (isset(self::$SPECIAL_FIELD_NAMES[$DBColumn->column_name])) 
+                            $column->set('type',self::$SPECIAL_FIELD_NAMES[$DBColumn->column_name] );
+                        else if(isset(self::$FIELD_TYPES[$DBColumn->data_type]))
+                           $column->set('type',self::$FIELD_TYPES[$DBColumn->data_type] );
                         else
                             throw new \Exception ('data_type Name Could Not Found for: '.$DBColumn->data_type );
 
-            		}
-	            	if(in_array($DBColumn->column_name,self::$NON_EDITABLE_FIELDS))
-            			$column->setEditable(false);
-            		else
-            			$column->setEditable(true);
-            	}
-                else if($fieldVar == 'character_maximum_length')
-                {
-                    if(!isset($DBColumn->character_maximum_length))
-                    {
-                        if(isset( self::$LENGHTS[$DBColumn->data_type] ))
+                        if(in_array($DBColumn->column_name,self::$NON_EDITABLE_FIELDS))
                         {
-                            $column->setMaxLength( self::$LENGHTS[$DBColumn->data_type] );
+                            $column->set('disabled','disabled');
+                            $column->setEditable(false);
                         }
+                        else
+                            $column->setEditable(true); 
 
- 
-                    }
-                    else
-                    {
-                        $column->setMaxLength( $DBColumn->character_maximum_length );
-                    }
-
+                    case 'character_maximum_length':
+                        if(!isset($DBColumn->character_maximum_length))
+                        {
+                            if(isset( self::$LENGHTS[$DBColumn->data_type] ))
+                                $column->set( 'maxlength',self::$LENGHTS[$DBColumn->data_type] );
+                            else
+                                $column->set('maxlength',255);
+                        }
+                        else
+                            $column->set('maxlength', $DBColumn->character_maximum_length );
+                        break;
+                    case 'is_nullable':
+                        if($DBColumn->$fieldVar == 'NO')
+                            $column->set('required','required' );    
+                        break;
+                    case 'column_default':
+                        $column->setDefault( $DBColumn->$fieldVar);  
+                        break;
                 }
-                else if ($fieldVar == 'is_nullable')
-                {
-                    $fieldVarName = self::$ESSENTIAL_FIELD_VARS[$fieldVar];
-                    $column->setRequired( $DBColumn->$fieldVar );                    
-                    //$column->setRequired( $DBColumn->$fieldVar );                    
-                }
-            	else if($fieldVar == 'column_default')
-            	{
-                    $fieldVarName = self::$ESSENTIAL_FIELD_VARS[$fieldVar];
-                    $column->setDefault( $DBColumn->$fieldVar);  
-            	}
             }
-
             $columns[$DBColumn->column_name] = $column; 
 
             if(sizeof($formFields== 1) && $formFields[0]=='*' )
             {
-                if(!in_array($column->getName(),self::$NON_EDITABLE_FIELDS))
-                    $tmpFormFields[] = $column->getName();
+                if(!in_array($column->get('name'),self::$NON_EDITABLE_FIELDS))
+                    $tmpFormFields[] = $column->get('name');
             }
             if(sizeof($tableFields== 1) && $tableFields[0]=='*')
             {
-                if(!in_array($column->getName(),self::$NON_EDITABLE_FIELDS))
-                    $tmpTableFields[] = $column->getName();
+                if(!in_array($column->get('name'),self::$NON_EDITABLE_FIELDS))
+                    $tmpTableFields[] = $column->get('name');
 
             }
 
-
-    }
-
+        }
             if(sizeof($formFields== 1) && $formFields[0]=='*')
             {
                 $dataModel->setFormFields($tmpFormFields);
@@ -107,13 +97,13 @@ class MySqlColumnHelper extends ColumnHelper{
 
             foreach($columns as $column)
             {
-                if(in_array($column->getName(),$formFields))
+                if(in_array($column->get('name'),$formFields))
                 {
                     $rule = null;
-                    $rule = ($column->getRequired() && $column->getEditable() )? "required":"";
-                    $rule.=($column->getRequired()  && $column->getEditable() )?self::$OR.self::$VALIDATOR_TYPES[$column->getType()] : self::$VALIDATOR_TYPES[$column->getType()];
-                    $rule.= self::$OR."max:".$column->getMaxLength();
-                    $rules[$column->getName()] = $rule;              
+                    $rule = ($column->get('required')=='required' && $column->getEditable() )? "required":"";
+                    $rule.=($column->get('required')=='required'  && $column->getEditable() )?self::$OR.self::$VALIDATOR_TYPES[$column->get('type')] : self::$VALIDATOR_TYPES[$column->get('type')];
+                    $rule.= self::$OR."max:".$column->get('maxlength');
+                    $rules[$column->get('name')] = $rule;              
                 }   
             }
         $dataModel->setRules($rules);

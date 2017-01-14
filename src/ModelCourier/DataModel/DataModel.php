@@ -10,6 +10,7 @@ abstract class DataModel implements DataModelContract
 	protected $name;
 	protected $model;
 	protected $table;
+	protected $file = null;
 
 	protected $tableFields = ['*'];
 	protected $formFields = ['*'];
@@ -121,7 +122,7 @@ abstract class DataModel implements DataModelContract
                 $array= [];
                 $foreignModelName = $foreign->foreignModelName;
 
-				$modelPath = $this->MODELS_PATH.'\\'.$foreignModelName;
+				$modelPath = self::$MODELS_PATH.$foreignModelName;
                 $foreignDatas = (new $modelPath)->orderBy('id')->get();
                 $array[$foreign->columnName] = $foreignDatas;
                 $this->addForeignData($array);  
@@ -213,4 +214,28 @@ abstract class DataModel implements DataModelContract
     }
 
 
+
+    /**
+     * Gets the value of file.
+     *
+     * @return mixed
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * Sets the value of file.
+     *
+     * @param mixed $file the file
+     *
+     * @return self
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
 }

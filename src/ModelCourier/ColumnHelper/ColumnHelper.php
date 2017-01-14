@@ -5,9 +5,10 @@ use ModelCourier\Contracts\ColumnHelperContract;
 
 abstract class ColumnHelper implements ColumnHelperContract{
 	
-    protected static $VALIDATOR_TYPES = ['text' => 'string', 'number'=> 'numeric', 'email' => 'email', 'password' => 'string', 'date' => 'date', 'datetime'=>'datetime', 'checkbox'=>'string','time'=>'time' ];
+    protected static $VALIDATOR_TYPES = ['text' => 'string', 'number'=> 'numeric', 'email' => 'email', 'password' => 'string', 'date' => 'date', 'datetime'=>'datetime', 'checkbox'=>'string','time'=>'time','file'=>'file' ];
     protected static $OR = '|';
     protected static $SPECIAL_FIELD_TYPES = ['password'=>'password', 'email'=>'email'];
+    protected static $SPECIAL_FIELD_NAMES = ['file_path'=>'file', 'path'=>'file'];
     protected static $NON_EDITABLE_FIELDS = ['id','created_by', 'deleted_by', 'created_at', 'updated_at', 'deleted_at'];
     protected static $FIELD_TYPES = [
         'varchar' => 'text',
@@ -19,9 +20,11 @@ abstract class ColumnHelper implements ColumnHelperContract{
         'mediumtext'=>'text',
         'decimal'=>'number','double'=>'number','enum'=>'text',
         'bool' => 'checkbox',
+        'file'=>'file',
+        'boolean' => 'checkbox',
         'timestamp' => 'datetime', 'date'=>'date','datetime'=>'datetime', 'time'=>'time'
         ];
-    protected static $LENGHTS = ['text'=>'1000','json'=>'1000'];
+    protected static $LENGHTS = ['text'=>'1000','json'=>'1000','boolean'=>'1'];
     protected static $FOREIGN_FIELDS = ['constraint_name'=>'constraintName', 'table_name'=> 'tableName', 'column_name'=> 'columnName', 'foreign_table_name'=>'foreignTableName', 'foreign_column_name'=>'foreignColumnName'];
 
     public static function detectColumnHelper()
@@ -56,7 +59,7 @@ abstract class ColumnHelper implements ColumnHelperContract{
                     $foreign->$foreignField = $fk->$key;
                 }
                 $foreign->functionName = self::singularize($fk->foreign_table_name);
-                $foreign->foreignModelName = self::singularize($foreign->functionName,true);
+                $foreign->foreignModelName = self::toModelName($foreign->functionName);
                 //$foreign->dataModelName = $beautyfier->toDataModelName($fk->foreign_table_name);
                 $foreigns[$fk->column_name] = $foreign;
             }
@@ -104,6 +107,15 @@ abstract class ColumnHelper implements ColumnHelperContract{
     protected static function beautify($bad)
     {
         return ucwords(str_replace('_',' ',$bad));
+
+    }
+    protected static function toCamel($spaced)
+    {
+        return str_replace(' ','',$spaced);
+    }
+    protected static function toModelName($bad)
+    {
+        return self::toCamel(self::beautify(self::singularize($bad,true)));
 
     }
 
