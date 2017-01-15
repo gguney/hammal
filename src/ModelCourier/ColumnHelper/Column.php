@@ -69,6 +69,7 @@ class Column
     public function setSpecialType($specialType)
     {
         $this->specialType = $specialType;
+        $this->attributes['type'] = $specialType;
 
         return $this;
     }
