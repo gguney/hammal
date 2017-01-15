@@ -5,6 +5,7 @@ class Column
 {
     protected $specialType;
     protected $editable;
+    protected $default;
     protected $attributes = array();
 
 
@@ -92,6 +93,30 @@ class Column
     public function setEditable($editable)
     {
         $this->editable = $editable;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of default.
+     *
+     * @return mixed
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * Sets the value of default.
+     *
+     * @param mixed $default the default
+     *
+     * @return self
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
 
         return $this;
     }
