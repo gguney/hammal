@@ -3,8 +3,7 @@ namespace ModelCourier\ColumnHelper;
 
 class Column
 {
-    protected $nullable;
-    protected $default;
+    protected $specialType;
     protected $editable;
     protected $attributes = array();
 
@@ -18,6 +17,7 @@ class Column
     {
         $this->attributes[$index] = $value;
     }
+
     public function get($index)
     {
         return (isset($this->attributes[$index]))?$this->attributes[$index]:null;
@@ -25,49 +25,49 @@ class Column
     }
 
     /**
-     * Gets the value of nullable.
+     * Gets the value of atrributes.
      *
      * @return mixed
      */
-    public function getNullable()
+    public function getAttributes()
     {
-        return $this->nullable;
+        return $this->attributes;
     }
 
     /**
-     * Sets the value of nullable.
+     * Sets the value of atrributes.
      *
-     * @param mixed $nullable the nullable
+     * @param mixed $atrributes the atrributes
      *
      * @return self
      */
-    public function setNullable($nullable)
+    public function setAttributes($attributes)
     {
-        $this->nullable = $nullable;
+        $this->attributes = $attributes;
 
         return $this;
     }
 
     /**
-     * Gets the value of default.
+     * Gets the value of specialType.
      *
      * @return mixed
      */
-    public function getDefault()
+    public function getSpecialType()
     {
-        return $this->default;
+        return $this->specialType;
     }
 
     /**
-     * Sets the value of default.
+     * Sets the value of specialType.
      *
-     * @param mixed $default the default
+     * @param mixed $specialType the special type
      *
      * @return self
      */
-    public function setDefault($default)
+    public function setSpecialType($specialType)
     {
-        $this->default = $default;
+        $this->specialType = $specialType;
 
         return $this;
     }
@@ -92,31 +92,6 @@ class Column
     public function setEditable($editable)
     {
         $this->editable = $editable;
-
-        return $this;
-    }
-
-
-    /**
-     * Gets the value of atrributes.
-     *
-     * @return mixed
-     */
-    public function getAttributes()
-    {
-        return $this->attributes;
-    }
-
-    /**
-     * Sets the value of atrributes.
-     *
-     * @param mixed $atrributes the atrributes
-     *
-     * @return self
-     */
-    public function setAttributes($attributes)
-    {
-        $this->attributes = $attributes;
 
         return $this;
     }
