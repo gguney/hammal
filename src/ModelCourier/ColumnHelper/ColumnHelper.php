@@ -86,6 +86,9 @@ abstract class ColumnHelper implements ColumnHelperContract{
     }
     protected static function singularize($plural,$shouldUc = false)
     {
+        $singular = str_singular($plural);
+        return $singular;
+        
         $plural = lcfirst($plural);
         if(substr($plural,-1) == 's' )
         {
@@ -115,6 +118,7 @@ abstract class ColumnHelper implements ColumnHelperContract{
     }
     protected static function toModelName($bad)
     {
+
         return self::toCamel(self::beautify(self::singularize($bad,true)));
 
     }
