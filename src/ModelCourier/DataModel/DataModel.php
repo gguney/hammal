@@ -48,6 +48,14 @@ abstract class DataModel implements DataModelContract
 		$columnHelper->setupColumns($this);
 	    $columnHelper->getFKs($this);
 	}
+	public function setColumnType($array)
+	{
+        $columns = $this->getColumns();
+        foreach ($array as $columnIndex => $columnNewType) {
+        	$columns[$columnIndex]->set('type',$columnNewType);
+        }
+        $this->setColumns($columns);
+	}
 	public function getName()
 	{
 		return $this->name;

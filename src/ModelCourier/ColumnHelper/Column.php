@@ -3,7 +3,6 @@ namespace ModelCourier\ColumnHelper;
 
 class Column
 {
-    protected $specialType;
     protected $editable;
     protected $default;
     protected $attributes = array();
@@ -49,30 +48,6 @@ class Column
         return $this;
     }
 
-    /**
-     * Gets the value of specialType.
-     *
-     * @return mixed
-     */
-    public function getSpecialType()
-    {
-        return $this->specialType;
-    }
-
-    /**
-     * Sets the value of specialType.
-     *
-     * @param mixed $specialType the special type
-     *
-     * @return self
-     */
-    public function setSpecialType($specialType)
-    {
-        $this->specialType = $specialType;
-        $this->attributes['type'] = $specialType;
-
-        return $this;
-    }
 
     /**
      * Gets the value of editable.
