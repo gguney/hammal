@@ -129,7 +129,7 @@ class MySqlColumnHelper extends ColumnHelper{
                   ON tc.constraint_name = kcu.constraint_name
                 JOIN information_schema.REFERENTIAL_CONSTRAINTS AS ccu
                   ON ccu.constraint_name = tc.constraint_name
-            WHERE constraint_type = 'FOREIGN KEY' AND (tc.table_name='".$dataModel->getTable()."' OR ccu.REFERENCED_TABLE_NAME='".$dataModel->getTable()."' );"
+            WHERE constraint_type = 'FOREIGN KEY' AND ccu.CONSTRAINT_SCHEMA='".env('DB_DATABASE')."' AND (tc.table_name='".$dataModel->getTable()."' OR ccu.REFERENCED_TABLE_NAME='".$dataModel->getTable()."' );"
             ));
         self::setupForeignsAndDomestics($dataModel,$fks);
     }
