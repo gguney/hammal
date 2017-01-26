@@ -30,7 +30,9 @@ class MySqlColumnHelper extends ColumnHelper{
                     case 'column_name':
                         $column->set('label',self::beautify($DBColumn->column_name));
                         $column->set('name',$DBColumn->column_name);
-                        $column->set('placeholder','Enter '.$column->get('label'));
+                        $placeHolder = (\Lang::has('general.Enter_'.$column->get('label')))?trans('general.Enter_'.$column->get('label')):'Enter '.$column->get('label');
+
+                        $column->set('placeholder', $placeHolder);
                         if(isset(self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name]))
                             $column->set('type',self::$SPECIAL_FIELD_TYPES[$DBColumn->column_name] );
                         else if (isset(self::$SPECIAL_FIELD_NAMES[$DBColumn->column_name])) 
