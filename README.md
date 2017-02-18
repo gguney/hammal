@@ -14,7 +14,7 @@ $ composer require gguney/model-courier
 ```
 
 ### Usage
-Add package's service provider to your cofig/app.php
+Add package's service provider to your config/app.php
 
 ```php
 ...
