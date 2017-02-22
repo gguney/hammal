@@ -1,9 +1,9 @@
 {
-    "name": "gguney/model-courier",
+    "name": "gguney/hammal",
     "type": "library",
-    "description": "Model Information Courier",
+    "description": "Model Information Courier, Hammal",
     "keywords": ["Database","Table","Model","Courier"],
-    "homepage": "https://github.com/gokhanguneygg/modelcourier",
+    "homepage": "https://github.com/gokhanguneygg/hammal",
     "license": "MIT",
     "minimum-stability": "dev",
     "authors": [
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ModelCourier\\": "src/ModelCourier"
+            "Hammal\\": "src/Hammal"
         }
     }
 }

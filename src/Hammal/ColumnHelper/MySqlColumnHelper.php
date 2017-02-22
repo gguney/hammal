@@ -1,8 +1,8 @@
 <?php
-namespace ModelCourier\ColumnHelper;
+namespace Hammal\ColumnHelper;
 
-use ModelCourier\Contracts\ColumnHelperContract;
-use ModelCourier\ColumnHelper\Column;
+use Hammal\Contracts\ColumnHelperContract;
+use Hammal\ColumnHelper\Column;
 
 class MySqlColumnHelper extends ColumnHelper{
 

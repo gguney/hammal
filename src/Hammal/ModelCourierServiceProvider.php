@@ -1,7 +1,7 @@
 <?php
-namespace ModelCourier;
+namespace Hammal;
 use Illuminate\Support\ServiceProvider;
-class ModelCourierProvider extends ServiceProvider
+class HammalServiceProvider extends ServiceProvider
 {
     /**
      * Register the service provider.

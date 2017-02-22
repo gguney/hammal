@@ -1,7 +1,7 @@
 <?php
-namespace ModelCourier\ColumnHelper;
+namespace Hammal\ColumnHelper;
 
-use ModelCourier\Contracts\ColumnHelperContract;
+use Hammal\Contracts\ColumnHelperContract;
 
 class PgSqlColumnHelper extends ColumnHelper{
 
