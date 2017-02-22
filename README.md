@@ -10,7 +10,7 @@ Get's databases table information
 ### Installation
 
 ```bash
-$ composer require gguney/Hammal
+$ composer require gguney/hammal
 ```
 
 ### Usage
