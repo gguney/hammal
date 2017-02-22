@@ -60,7 +60,16 @@ abstract class DataModel implements DataModelContract
 	{
 		return $this->name;
 	}
-
+	public function getShowName()
+	{
+		if(\Lang::has('general.'.$this->name))
+			return trans('general.'.$this->name);
+		else{
+			$name = preg_split('/(?=[A-Z])/',lcfirst($this->name));
+			$name = ucwords(implode(' ',$name));
+			return $name;
+		}
+	}
 	public function setNonEditableFields($nonEditableFields)
 	{
 		$this->nonEditableFields = $nonEditableFields;
@@ -81,7 +90,6 @@ abstract class DataModel implements DataModelContract
 			else 
 				$this->model = 'Ref'.$this->toModelName($this->name);        
 		}
-
 		$modelPath = self::$MODELS_PATH.$this->model;
 		$model = (new $modelPath);
 		if(!isset($this->table))
@@ -145,11 +153,12 @@ abstract class DataModel implements DataModelContract
 
 	private function toModelName($name)
 	{	
-		return substr($name,0, -1);
-
+		return str_singular($name,0, -1);
 	}
 	private function toTableName($name)
 	{	
+		$name = preg_split('/(?=[A-Z])/',lcfirst($name));
+		$name = strtolower(implode('_',$name));
 		return lcfirst($name);
 	}
 	public function getModelName()

@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\DataModels;
 
+use Hammal\DataModel\DataModel;
+
 class Articles extends DataModel{
 	/*
 	protected $model = 'Article';

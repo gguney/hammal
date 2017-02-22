@@ -20,6 +20,7 @@ class MySqlColumnHelper extends ColumnHelper{
         $formFields = $dataModel->getFormFields();
        	$tableFields = $dataModel->getTableFields();
         $fieldVars = array_keys(self::$ESSENTIAL_FIELD_VARS);
+
         foreach($DBColumns as $DBColumn )
         {
             $column = new Column();
