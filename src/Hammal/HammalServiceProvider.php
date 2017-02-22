@@ -3,14 +3,18 @@ namespace Hammal;
 use Illuminate\Support\ServiceProvider;
 class HammalServiceProvider extends ServiceProvider
 {
+    protected $commands = [
+        'Hammal\Commands\MakeDataModel',
+    ];
     /**
      * Register the service provider.
      *
      * @return void
      */
     public function register(){
-
+        $this->commands($this->commands);
     }
+
     public function boot()
     {
     	$this->publishes([
