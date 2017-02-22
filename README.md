@@ -1,16 +1,16 @@
-# ModelCourier - DatabaseModeller for Laravel
+# Hammal - DatabaseModeller for Laravel
 
 Get's databases table information
 
 ### Requirements
 
-- ModelCourier works with PHP 5.6 or above.
-- ModelCourier only works with PostgreSQL and MySQL.
+- Hammal works with PHP 5.6 or above.
+- Hammal only works with PostgreSQL and MySQL.
 
 ### Installation
 
 ```bash
-$ composer require gguney/model-courier
+$ composer require gguney/Hammal
 ```
 
 ### Usage
@@ -18,7 +18,7 @@ Add package's service provider to your config/app.php
 
 ```php
 ...
-        ModelCourier\ModelCourierProvider::class,
+        Hammal\HammalServiceProvider::class,
 ...
 ```
 

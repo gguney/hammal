@@ -1,5 +1,5 @@
 <?php 
-namespace ModelCourier\Contracts;
+namespace Hammal\Contracts;
 
 interface ColumnHelperContract{
 	public static function detectColumnHelper();

@@ -1,5 +1,5 @@
 <?php
-namespace ModelCourier\ColumnHelper;
+namespace Hammal\ColumnHelper;
 
 class Column
 {
