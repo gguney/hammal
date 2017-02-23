@@ -45,7 +45,7 @@ class MakeDataModel extends Command
         $tableName = strtolower(implode('_',$tableNameArray));
         $DMName = ucfirst(str_plural($modelName));
 
-        $hiddenFields = "'id', 'created_at', 'updated_at'";
+        $hiddenFields = "'id', 'created_at', 'updated_at', 'deleted_at'";
 
         $DMFolderPath = app_path('Http/DataModels/'.$DMName.'.php');;
         $ModelFolderPath = app_path('Http/Models/'.$modelName.'.php');;
