@@ -42,4 +42,4 @@ Gökhan Güney - <gokhanguneygg@gmail.com><br />
 
 ### License
 
-Konnex is licensed under the MIT License - see the `LICENSE` file for details
+Hammal is licensed under the MIT License - see the `LICENSE` file for details
