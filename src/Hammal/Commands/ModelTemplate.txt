@@ -1,0 +1,39 @@
+<?php
+namespace App\Http\Models;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class {MODEL_NAME} extends Model
+{
+    /**
+     * Soft Deletes trait.
+     */
+    use SoftDeletes;
+
+    /**
+     * Table name.
+     * 
+     * @var string
+     */
+    protected $table = '{TABLE_NAME}';
+
+    /**
+     * Mass assignable fields.
+     * 
+     * @var array
+     */
+    protected $fillable = [
+        {FILLABLE_FIELDS}
+    ];
+
+    /**
+     * Hidden fields
+     * 
+     * @var array
+     */
+    protected $hidden = [
+        {HIDDEN_FIELDS}
+
+    ];
+
+}

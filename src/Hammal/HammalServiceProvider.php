@@ -17,6 +17,7 @@ class HammalServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        /*
     	$this->publishes([
             __DIR__.'/Publish/Articles.php' => app_path('Http/DataModels/Articles.php')
         ], 'dataModels');
@@ -26,5 +27,6 @@ class HammalServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/Publish/migrations' => database_path('migrations')
         ], 'migrations');
+        */
     }
 }

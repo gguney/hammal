@@ -25,7 +25,7 @@ class {DM_NAME} extends DataModel
      * @var array
      */
     protected $tableFields = [
-        'id'
+        {TABLE_FIELDS}
     ];
 
     /**
@@ -34,7 +34,7 @@ class {DM_NAME} extends DataModel
      * @var array
      */
     protected $formFields = [
-        'id'
+        {FORM_FIELDS}
     ];
 
     /**
@@ -43,6 +43,6 @@ class {DM_NAME} extends DataModel
      * @var array
      */
     protected $hiddenFields = [
-
+        {HIDDEN_FIELDS}    
     ];
 }

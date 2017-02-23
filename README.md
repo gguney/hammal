@@ -13,7 +13,7 @@ Get's databases table information
 $ composer require gguney/hammal
 ```
 
-### Usage
+### Preparation
 Add package's service provider to your config/app.php
 
 ```php
@@ -27,9 +27,14 @@ Then write this line on cmd.
 $ php artisan vendor:publish
 ```
 
-It will copy 2 migrations to your migrations folder. Articles and Categories.
-And 1 Aricles.php to app/Http/DataModels/
-And 1 Aricle.php to app/Http/Models/
+### Usage
+
+```bash
+$ php artisan make:dataModel YourModelName --m --fill
+```
+YourModelName variable is the name of your model.
+--m (optional) option also creates the Model. 
+--fill (optional) option is to fill the field variable arrays of the DataModel from Database table.
 
 ### Author
 

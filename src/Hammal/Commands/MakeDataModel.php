@@ -2,6 +2,8 @@
 namespace Hammal\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class MakeDataModel extends Command
 {
@@ -10,7 +12,7 @@ class MakeDataModel extends Command
      *
      * @var string
      */
-    protected $signature = 'make:dataModel {modelName}';
+    protected $signature = 'make:dataModel {modelName} {--m} {--fill}';
 
     /**
      * The console command description.
@@ -36,21 +38,51 @@ class MakeDataModel extends Command
      */
     public function handle()
     {
+        $shouldFill = $this->option('fill');
+        $withModel = $this->option('m');
         $modelName = $this->argument('modelName');
+
+        $tableNameArray = preg_split('/(?=[A-Z])/',str_plural(lcfirst($modelName)));
+        $tableName = strtolower(implode('_',$tableNameArray));
         $DMName = ucfirst(str_plural($modelName));
-        $tableName = lcfirst($DMName);
 
-        $txt = file_get_contents(__DIR__.'/DataModelTemplate.php') or die("Unable to open file!");
-        $txt = str_replace('{DM_NAME}', $DMName, $txt);
-        $txt = str_replace('{MODEL_NAME}', $modelName, $txt);
-        $txt = str_replace('{TABLE_NAME}', $tableName, $txt);
+        $hiddenFields = "'id', 'created_at', 'updated_at'";
 
-        $DMFolderPath = 'Http/DataModels/';
-        $path = app_path($DMFolderPath.$DMName.'.php');
-        $myfile = fopen($path, "w") or die("Unable to open file!");
+        $DMFolderPath = app_path('Http/DataModels/'.$DMName.'.txt');;
+        $ModelFolderPath = app_path('Http/Models/'.$modelName.'.txt');;
 
-        fwrite($myfile, $txt);
-        fclose($myfile);
+        $fieldsArray = Schema::getColumnListing($tableName);
+        $fieldsArray = array_map(function($value){
+          return "'".$value."'";
+        },$fieldsArray);
+        $fieldsString = implode(', ',$fieldsArray);
+
+        if($withModel)
+        {
+            $modelTemplate = file_get_contents(__DIR__.'/ModelTemplate.php') or die("Unable to open ModelTemplate file!");
+            $modelTemplate = str_replace(
+                ['{MODEL_NAME}', '{TABLE_NAME}', '{FILLABLE_FIELDS}', '{HIDDEN_FIELDS}'], 
+                [$modelName, $tableName, $fieldsString, $hiddenFields], 
+                $modelTemplate);
+            $ModelFile = fopen($ModelFolderPath, "w") or die("Unable to open file!");
+            fwrite($ModelFile, $modelTemplate);
+            fclose($ModelFile);
+            $this->info($modelName.' named Model created in '.$ModelFolderPath.'.');
+        }
+
+        if(!$shouldFill)
+        {
+            $fieldsString = "'id'";
+        }
+        $dataModelTemplate = file_get_contents(__DIR__.'/DataModelTemplate.php') or die("Unable to open DataModelTemplate file!");
+        $dataModelTemplate = str_replace(
+            ['{DM_NAME}', '{MODEL_NAME}', '{TABLE_NAME}', '{TABLE_FIELDS}', '{FORM_FIELDS}', '{HIDDEN_FIELDS}'],
+            [$DMName, $modelName, $tableName, $fieldsString, $fieldsString, $hiddenFields],
+             $dataModelTemplate);
+        $DMFile = fopen($DMFolderPath, "w") or die("Unable to open file!");
+        fwrite($DMFile, $dataModelTemplate);
+        fclose($DMFile);
+
         $this->info($DMName.' named DataModel created in '.$DMFolderPath.'.');
     }
 }

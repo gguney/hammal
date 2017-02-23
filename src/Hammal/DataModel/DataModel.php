@@ -182,6 +182,38 @@ abstract class DataModel implements DataModelContract
 	}
 
 	/**
+	 * Set name of the DataModel
+	 *
+	 * @return void
+	 */
+	public function setName()
+	{
+		$name = get_class($this);
+		$this->name = substr($name, strrpos($name, '\\') + 1);
+		if(!isset($this->model))
+		{
+			if(!$this->pivot)
+				$this->model = Tider::toModelNameFromDMName($this->name);        
+			else 
+				$this->model = 'Ref'.Tider::toModelNameFromDMName($this->name);        
+		}
+		$modelPath = self::$MODELS_PATH.$this->model;
+		$model = (new $modelPath);
+		if(!isset($this->table))
+		{
+			if(!$this->pivot)
+				$this->table = Tider::toTableNameFromDMName($this->name);     
+			else
+				$this->table = 'ref_'.Tider::toTableNameFromDMName($this->name);     
+		}
+		if(!isset($this->hiddenFields))
+		{	
+			$hiddenFields = $model->getHidden();
+			$this->hiddenFields = $hiddenFields;
+		}
+	}
+	
+	/**
 	 * Get user-friendly name of the DataModel.
 	 * 
 	 * @return string
@@ -212,38 +244,6 @@ abstract class DataModel implements DataModelContract
 	public function getNonEditableFields()
 	{
 		return $this->nonEditableFields;
-	}
-
-	/**
-	 * Set name of the DataModel
-	 *
-	 * @return void
-	 */
-	public function setName()
-	{
-		$name = get_class($this);
-		$this->name = substr($name, strrpos($name, '\\') + 1);
-		if(!isset($this->model))
-		{
-			if(!$this->pivot)
-				$this->model = Tider::toModelNameFromDMName($this->name);        
-			else 
-				$this->model = 'Ref'.Tider::toModelNameFromDMName($this->name);        
-		}
-		$modelPath = self::$MODELS_PATH.$this->model;
-		$model = (new $modelPath);
-		if(!isset($this->table))
-		{
-			if(!$this->pivot)
-				$this->table = Tider::toTableNameFromDMName($this->name);     
-			else
-				$this->table = 'ref_'.Tider::toTableNameFromDMName($this->name);     
-		}
-		if(!isset($this->hiddenFields))
-		{	
-			$hiddenFields = $model->getHidden();
-			$this->hiddenFields = $hiddenFields;
-		}
 	}
 
 	/**
