@@ -17,7 +17,7 @@ class MakeDataModel extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'It creates Data Model from given model name.';
 
     /**
      * Create a new command instance.
@@ -38,34 +38,19 @@ class MakeDataModel extends Command
     {
         $modelName = $this->argument('modelName');
         $DMName = ucfirst(str_plural($modelName));
-        $path = app_path('Http/DataModels/'.$DMName.'.php');
-        $template = fopen('DataModelTemplate.php', "r") or die("Unable to open file!");
+        $tableName = lcfirst($DMName);
+
+        $txt = file_get_contents(__DIR__.'/DataModelTemplate.php') or die("Unable to open file!");
+        $txt = str_replace('{DM_NAME}', $DMName, $txt);
+        $txt = str_replace('{MODEL_NAME}', $modelName, $txt);
+        $txt = str_replace('{TABLE_NAME}', $tableName, $txt);
+
+        $DMFolderPath = 'Http/DataModels/';
+        $path = app_path($DMFolderPath.$DMName.'.php');
         $myfile = fopen($path, "w") or die("Unable to open file!");
-          $this->info( $template.' DataModel created.');
-          die;
 
-        $txt = "<?php
-namespace App\Http\DataModels;
-
-use Hammal\DataModel\DataModel;
-
-class $DMName extends DataModel
-{
-    protected \$model = '".lcFirst($modelName)."';
-    protected \$table = '".lcfirst($DMName)."';
-
-    protected \$tableFields = [
-        'id'
-    ];
-    protected \$formFields = [
-        'id'
-    ];
-    protected \$hiddenFields = [
-
-    ];
-}";
-            fwrite($myfile, $txt);
-            fclose($myfile);
-            $this->info($DMName.' DataModel created.');
+        fwrite($myfile, $txt);
+        fclose($myfile);
+        $this->info($DMName.' named DataModel created in '.$DMFolderPath.'.');
     }
 }
