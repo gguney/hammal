@@ -3,16 +3,30 @@ namespace Hammal\ColumnHelper;
 
 use Hammal\Contracts\ColumnHelperContract;
 use Hammal\ColumnHelper\Column;
+use Hammal\Tider\Tider;
 
 class MySqlColumnHelper extends ColumnHelper{
 
-    protected static $ESSENTIAL_FIELD_VARS = [	'column_name'=>'name',
-    											'column_default'=>'columnDefault', 
-    											'is_nullable'=>'required',
-    											'data_type'=>'fieldType',
-    											'character_maximum_length'=>'maxLength'];
-    
+    /**
+     * Attirbutes to get from DB.
+     * 
+     * @var array
+     */
+    protected static $ESSENTIAL_FIELD_VARS = [
+        'column_name'=>'name',
+    	'column_default'=>'columnDefault', 
+    	'is_nullable'=>'required',
+    	'data_type'=>'fieldType',
+    	'character_maximum_length'=>'maxLength'
+        ];
 
+    /**
+     * Setup columns for DataModel.
+     * 
+     * @param  DataModel $dataModel
+     * 
+     * @return void
+     */
    	public static function setupColumns($dataModel)
     {
     	$selectFields = implode(",", array_keys(self::$ESSENTIAL_FIELD_VARS));
@@ -29,7 +43,7 @@ class MySqlColumnHelper extends ColumnHelper{
                 switch($fieldVar)
                 {
                     case 'column_name':
-                        $column->set('label',self::beautify($DBColumn->column_name));
+                        $column->set('label',Tider::beautify($DBColumn->column_name));
                         $column->set('name',$DBColumn->column_name);
                         $placeHolder = (\Lang::has('general.Enter_'.$column->get('label')))?trans('general.Enter_'.$column->get('label')):'Enter '.$column->get('label');
 
@@ -112,8 +126,15 @@ class MySqlColumnHelper extends ColumnHelper{
         $dataModel->setRules($rules);
         $dataModel->setColumns($columns);
         $dataModel->setNonEditableFields(self::$NON_EDITABLE_FIELDS);  
-
     }
+
+    /**
+     * Get foreign keys of DataModel
+     * 
+     * @param  DataModel $dataModel 
+     * 
+     * @return void
+     */
     public static function getFKs($dataModel)
     {
 
@@ -135,7 +156,3 @@ class MySqlColumnHelper extends ColumnHelper{
         self::setupForeignsAndDomestics($dataModel,$fks);
     }
 }
-
-
- ?>
-

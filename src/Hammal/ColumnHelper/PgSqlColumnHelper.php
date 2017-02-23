@@ -2,15 +2,30 @@
 namespace Hammal\ColumnHelper;
 
 use Hammal\Contracts\ColumnHelperContract;
+use Hammal\ColumnHelper\Column;
 
 class PgSqlColumnHelper extends ColumnHelper{
 
-    protected static $ESSENTIAL_FIELD_VARS = [	'column_name'=>'name',
-    											'column_default'=>'columnDefault', 
-    											'is_nullable'=>'required',
-    											'udt_name'=>'fieldType',
-    											'character_maximum_length'=>'maxLength'];
-                                                
+    /**
+     * Attirbutes to get from DB.
+     * 
+     * @var array
+     */
+    protected static $ESSENTIAL_FIELD_VARS = [
+        'column_name'=>'name',
+    	'column_default'=>'columnDefault', 
+    	'is_nullable'=>'required',
+    	'udt_name'=>'fieldType',
+    	'character_maximum_length'=>'maxLength'
+        ];
+                
+    /**
+     * Setup columns for DataModel.
+     * 
+     * @param  DataModel $dataModel
+     * 
+     * @return void
+     */                                
    	public static function setupColumns($dataModel)
     {
     	$selectFields = implode(",", array_keys(self::$ESSENTIAL_FIELD_VARS));
@@ -117,8 +132,15 @@ class PgSqlColumnHelper extends ColumnHelper{
         $dataModel->setRules($rules);
         $dataModel->setColumns($columns);
         $dataModel->setNonEditableFields(self::$NON_EDITABLE_FIELDS);
-
     }
+    
+    /**
+     * Get foreign keys of DataModel
+     * 
+     * @param  DataModel $dataModel 
+     * 
+     * @return void
+     */
     public static function getFKs($dataModel)
     {
 
@@ -138,11 +160,5 @@ class PgSqlColumnHelper extends ColumnHelper{
             WHERE constraint_type = 'FOREIGN KEY' AND (tc.table_name='".$dataModel->getTable()."' OR ccu.table_name='".$dataModel->getTable()."' );"
             ));
         self::setupForeignsAndDomestics($dataModel,$fks);
-
-
     }
 }
-
-
- ?>
-

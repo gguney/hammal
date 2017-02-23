@@ -1,23 +1,50 @@
 <?php
 namespace Hammal\ColumnHelper;
 
-class Column
-{
-    protected $editable;
-    protected $default;
-    protected $attributes = array();
+use Hammal\Contracts\ColumnContract;
 
+class Column implements ColumnContract{
 
     /**
-     * Gets the value of label.
+     * Column's editable value.
+     * 
+     * @var string
+     */
+    protected $editable;
+
+    /**
+     * Column's default value.
+     * 
+     * @var string
+     */
+    protected $default;
+
+    /**
+     * Attributes of the column.
+     * 
+     * @var array
+     */
+    protected $attributes = array();
+
+    /**
+     * Set value to given index.
+     * @param string $index
+     * @param string $value
      *
-     * @return mixed
+     * @return void
      */
     public function set($index, $value)
     {
         $this->attributes[$index] = $value;
     }
 
+    /**
+     * Get value for the given index.
+     * 
+     * @param string $index
+     *
+     * @return string
+     */
     public function get($index)
     {
         return (isset($this->attributes[$index]))?$this->attributes[$index]:null;
@@ -27,7 +54,7 @@ class Column
     /**
      * Gets the value of atrributes.
      *
-     * @return mixed
+     * @return array
      */
     public function getAttributes()
     {
@@ -35,11 +62,11 @@ class Column
     }
 
     /**
-     * Sets the value of atrributes.
+     * Set the value of atrributes.
      *
-     * @param mixed $atrributes the atrributes
+     * @param array $atrributes
      *
-     * @return self
+     * @return Column
      */
     public function setAttributes($attributes)
     {
@@ -50,9 +77,9 @@ class Column
 
 
     /**
-     * Gets the value of editable.
+     * Get the editable value of column.
      *
-     * @return mixed
+     * @return string
      */
     public function getEditable()
     {
@@ -60,11 +87,11 @@ class Column
     }
 
     /**
-     * Sets the value of editable.
+     * Set the value of editable.
      *
-     * @param mixed $editable the editable
+     * @param string $editable
      *
-     * @return self
+     * @return Column
      */
     public function setEditable($editable)
     {
@@ -74,9 +101,9 @@ class Column
     }
 
     /**
-     * Gets the value of default.
+     * Get the default value of column.
      *
-     * @return mixed
+     * @return string
      */
     public function getDefault()
     {
@@ -84,11 +111,11 @@ class Column
     }
 
     /**
-     * Sets the value of default.
+     * Set default value for column.
      *
-     * @param mixed $default the default
+     * @param string $default
      *
-     * @return self
+     * @return Column
      */
     public function setDefault($default)
     {
