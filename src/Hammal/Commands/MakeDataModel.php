@@ -47,8 +47,8 @@ class MakeDataModel extends Command
 
         $hiddenFields = "'id', 'created_at', 'updated_at'";
 
-        $DMFolderPath = app_path('Http/DataModels/'.$DMName.'.txt');;
-        $ModelFolderPath = app_path('Http/Models/'.$modelName.'.txt');;
+        $DMFolderPath = app_path('Http/DataModels/'.$DMName.'.php');;
+        $ModelFolderPath = app_path('Http/Models/'.$modelName.'.php');;
 
         $fieldsArray = Schema::getColumnListing($tableName);
         $fieldsArray = array_map(function($value){
@@ -58,7 +58,7 @@ class MakeDataModel extends Command
 
         if($withModel)
         {
-            $modelTemplate = file_get_contents(__DIR__.'/ModelTemplate.php') or die("Unable to open ModelTemplate file!");
+            $modelTemplate = file_get_contents(__DIR__.'/ModelTemplate.txt') or die("Unable to open ModelTemplate file!");
             $modelTemplate = str_replace(
                 ['{MODEL_NAME}', '{TABLE_NAME}', '{FILLABLE_FIELDS}', '{HIDDEN_FIELDS}'], 
                 [$modelName, $tableName, $fieldsString, $hiddenFields], 
@@ -73,7 +73,7 @@ class MakeDataModel extends Command
         {
             $fieldsString = "'id'";
         }
-        $dataModelTemplate = file_get_contents(__DIR__.'/DataModelTemplate.php') or die("Unable to open DataModelTemplate file!");
+        $dataModelTemplate = file_get_contents(__DIR__.'/DataModelTemplate.txt') or die("Unable to open DataModelTemplate file!");
         $dataModelTemplate = str_replace(
             ['{DM_NAME}', '{MODEL_NAME}', '{TABLE_NAME}', '{TABLE_FIELDS}', '{FORM_FIELDS}', '{HIDDEN_FIELDS}'],
             [$DMName, $modelName, $tableName, $fieldsString, $fieldsString, $hiddenFields],
