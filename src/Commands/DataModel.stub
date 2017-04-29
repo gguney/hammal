@@ -1,0 +1,61 @@
+<?php
+namespace {NAMESPACE};
+
+use GGuney\Hammal\DataModel\DataModel;
+
+class {DM_NAME} extends DataModel
+{
+    /**
+     * Model name for the related model. Can be deleted.
+     * 
+     * @var string
+     */
+    protected $model = '{MODEL_NAME}';
+
+    /**
+     * Table name for the related model. Can be deleted.
+     * 
+     * @var string
+     */
+    protected $table = '{TABLE_NAME}';
+
+    /**
+     * Fields array to render in table partial view. Can be deleted if all fields will be visible.
+     * 
+     * @var array
+     */
+    protected $tableFields = [
+        {TABLE_FIELDS}
+    ];
+
+    /**
+     * Fields array to render in form partial view. Can be deleted if all fields will be visible.
+     * 
+     * @var array
+     */
+    protected $formFields = [
+        {FORM_FIELDS}
+    ];
+
+    /**
+     * Fields array to be hidden in table and form partial view. Can be deleted if there is no hidden field. Can be deleted if Model's hidden array is the same.
+     * 
+     * @var array
+     */
+    protected $hiddenFields = [
+        {HIDDEN_FIELDS}    
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+
+     /*
+    protected $casts = [
+        'email' => ['type' => 'email'],
+        'name' => 'text',
+    ];
+    */
+}
