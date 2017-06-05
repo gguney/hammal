@@ -1,4 +1,5 @@
 <?php
+
 namespace GGuney\Hammal\DataModel;
 
 use GGuney\Hammal\Contracts\DataModelContract;
@@ -144,6 +145,7 @@ abstract class DataModel implements DataModelContract
         $rules = Ruler::getRules($columns, $this->getFormFields());
         $this->setColumns($columns);
         $this->cast();
+        $rules = $this->castRules($rules);
         $this->setRules($rules);
         $this->setNonEditableFields($columnHelper->getNonEditableFields());
         $fks = $columnHelper->getFKs($this);
@@ -270,8 +272,7 @@ abstract class DataModel implements DataModelContract
                 $foreignModelName = $foreign->foreignModelName;
 
                 $modelPath = $this->getModelsPath() . $foreignModelName;
-                $foreignDatas = (new $modelPath)->orderBy('id')
-                                                ->get();
+                $foreignDatas = (new $modelPath)->orderBy('id')->get();
                 $array[$foreign->columnName] = $foreignDatas;
                 $this->addForeignData($array);
             }
@@ -324,8 +325,15 @@ abstract class DataModel implements DataModelContract
      *
      * @return array
      */
-    public function getRules()
+    public function getRules(array $fields = null)
     {
+        if (isset($fields)) {
+            $rules = [];
+            foreach ($fields as $field) {
+                $rules[$field] = $this->rules[$field];
+            }
+            return $rules;
+        }
         return $this->rules;
     }
 
@@ -492,19 +500,21 @@ abstract class DataModel implements DataModelContract
             //$rules = Ruler::getRules($columns, $this->getFormFields());
             //$this->setRules($rules);
         }
-        /*
-        foreach($columns as $key => $column)
-        {
-            $method = 'set'.Str::studly($key).'Column';
-            if(method_exists($this, $method)){
-                $array = $this->{$method}();
-                foreach ($array as $index => $value)
+    }
+
+    private function castRules($rules)
+    {
+        if (isset($this->castRules)) {
+            foreach ($this->castRules as $key => $values) {
+                if(!in_array($values, array_keys($rules)))
                 {
-                    $column->set($index, $value);
+                    $rules[$key] = $rules[$key].$values;
+                }
+                else{
+                    $rules[$key] = $rules[$values];
                 }
             }
         }
-        */
-
+        return $rules;
     }
 }

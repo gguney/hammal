@@ -58,4 +58,17 @@ class {DM_NAME} extends DataModel
         'name' => 'text',
     ];
     */
+
+    /**
+     * The rules that should be cast to custom rules.
+     *
+     * @var array
+     */
+
+     /*
+    protected $castRules = [
+        'password_confirmation' => 'password',
+        'password' => '|confirmed'
+    ];
+    */
 }

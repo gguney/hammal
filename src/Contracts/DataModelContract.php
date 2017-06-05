@@ -106,7 +106,7 @@ interface DataModelContract
 	 * 
 	 * @return array
 	 */
-	public function getRules();
+	public function getRules(array $fields = null);
 
 	/**
 	 * Get form fields.
