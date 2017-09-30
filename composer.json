@@ -23,6 +23,13 @@
         "psr-4": {
             "GGuney\\Hammal\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "GGuney\\Hammal\\HammalServiceProvider"
+            ]
+        }
     }
 }
 
