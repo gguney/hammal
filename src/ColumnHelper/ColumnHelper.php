@@ -143,9 +143,11 @@ abstract class ColumnHelper implements ColumnHelperContract
         } else if (isset($this->FIELD_TYPES[$dataType])) {
             return $this->FIELD_TYPES[$dataType];
         } else {
-            throw new \Exception ('type Name Could Not Found for: ' . $columnName);
+            return 'text';
+            throw new \Exception ('Type Name Could Not Found for: ' . $columnName);
         }
     }
+
 
     public function getMaxLength($maxLength, $dataType)
     {
